@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Juros</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2e3f;
+      --accent: #6c63ff;
+      --accent-light: #8b85ff;
+      --success: #00d4aa;
+      --danger: #ff5f5f;
+      --text: #e8eaf0;
+      --muted: #8892a4;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-light), var(--success));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p { color: var(--muted); margin-top: .4rem; font-size: .95rem; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .tab {
+      flex: 1;
+      padding: .55rem 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .tab:hover { border-color: var(--accent); color: var(--accent-light); }
+
+    .tab.ativo {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .campo { margin-bottom: 1.2rem; }
+
+    label {
+      display: block;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: .45rem;
+    }
+
+    input {
+      width: 100%;
+      padding: .7rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 1rem;
+      transition: border-color .2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    input.erro { border-color: var(--danger); }
+
+    .hint { font-size: .78rem; color: var(--muted); margin-top: .3rem; }
+
+    .btn-calcular {
+      width: 100%;
+      padding: .85rem;
+      margin-top: .5rem;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .04em;
+      transition: background .2s, transform .1s;
+    }
+
+    .btn-calcular:hover { background: var(--accent-light); }
+    .btn-calcular:active { transform: scale(.98); }
+
+    .erros-lista {
+      background: rgba(255, 95, 95, .1);
+      border: 1px solid var(--danger);
+      border-radius: 8px;
+      padding: .8rem 1rem;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .erros-lista p { color: var(--danger); font-size: .88rem; line-height: 1.6; }
+
+    /* Resultado */
+    .resultado {
+      margin-top: 1.5rem;
+      display: none;
+    }
+
+    .resultado-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .resultado-titulo {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    .badge {
+      font-size: .75rem;
+      font-weight: 700;
+      padding: .2rem .6rem;
+      border-radius: 99px;
+      background: rgba(108, 99, 255, .2);
+      color: var(--accent-light);
+      border: 1px solid rgba(108, 99, 255, .4);
+    }
+
+    .grid-resultado {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .8rem;
+    }
+
+    .metrica {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .9rem 1rem;
+    }
+
+    .metrica-label {
+      font-size: .75rem;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .metrica-valor {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: .3rem;
+    }
+
+    .metrica-valor.destaque { color: var(--success); }
+
+    /* Tabela Price */
+    .tabela-wrap {
+      margin-top: 1rem;
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .82rem;
+    }
+
+    thead th {
+      background: var(--bg);
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: .72rem;
+      letter-spacing: .05em;
+      padding: .65rem .75rem;
+      text-align: right;
+    }
+
+    thead th:first-child { text-align: center; }
+
+    tbody tr { border-top: 1px solid var(--border); transition: background .15s; }
+    tbody tr:hover { background: rgba(255,255,255,.03); }
+
+    tbody td {
+      padding: .6rem .75rem;
+      text-align: right;
+      color: var(--text);
+    }
+
+    tbody td:first-child { text-align: center; color: var(--muted); font-weight: 600; }
+
+    .btn-limpar {
+      width: 100%;
+      padding: .6rem;
+      margin-top: 1rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: .88rem;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-limpar:hover { border-color: var(--accent); color: var(--accent-light); }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Calculadora de Juros</h1>
+  <p>Simples · Composto · Tabela Price</p>
+</header>
+
+<div class="card">
+  <!-- Abas de tipo -->
+  <div class="tabs" id="tabs">
+    <button class="tab ativo" data-tipo="simples" id="tab-simples">Simples</button>
+    <button class="tab" data-tipo="composto" id="tab-composto">Composto</button>
+    <button class="tab" data-tipo="price" id="tab-price">Tabela Price</button>
+  </div>
+
+  <!-- Formulário -->
+  <div class="campo">
+    <label for="principal">Principal (R$)</label>
+    <input type="number" id="principal" placeholder="Ex: 10000" min="0.01" step="0.01" />
+  </div>
+
+  <div class="campo">
+    <label for="taxa">Taxa de Juros (% a.m.)</label>
+    <input type="number" id="taxa" placeholder="Ex: 1.5" min="0" step="0.01" />
+  </div>
+
+  <div class="campo">
+    <label for="periodo">Período (meses)</label>
+    <input type="number" id="periodo" placeholder="Ex: 12" min="1" step="1" />
+    <div class="hint">Informe um número inteiro de meses.</div>
+  </div>
+
+  <button class="btn-calcular" id="btn-calcular">Calcular</button>
+
+  <!-- Erros -->
+  <div class="erros-lista" id="erros">
+    <p id="erros-texto"></p>
+  </div>
+
+  <!-- Resultado -->
+  <div class="resultado" id="resultado">
+    <div class="resultado-header">
+      <span class="resultado-titulo">Resultado</span>
+      <span class="badge" id="badge-tipo">—</span>
+    </div>
+
+    <div class="grid-resultado" id="grid-resultado">
+      <!-- preenchido via JS -->
+    </div>
+
+    <!-- Tabela Price parcelas -->
+    <div id="tabela-price-wrap" style="display:none">
+      <div class="tabela-wrap">
+        <table id="tabela-price">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Parcela</th>
+              <th>Juros</th>
+              <th>Amortização</th>
+              <th>Saldo</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-price-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <button class="btn-limpar" id="btn-limpar">Limpar</button>
+  </div>
+</div>
+
+<!-- Carrega lógica do sistema -->
+<script src="app.js"></script>
+
+</body>
+</html>

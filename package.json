@@ -1,0 +1,28 @@
+{
+  "name": "juros-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test:unit",
+    "test:unit": "mocha \"test/**/*.test.js\" --recursive",
+    "test:e2e": "npx playwright test",
+    "test:all": "npm run test:unit && npm run test:e2e",
+    "serve": "npx http-server public -p 4321 -c-1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.61.0",
+    "chai": "^4.5.0",
+    "http-server": "^14.1.1",
+    "mocha": "^11.7.6",
+    "mochawesome": "^7.1.4",
+    "mochawesome-merge": "^4.4.1",
+    "mochawesome-report-generator": "^6.3.2"
+  },
+  "dependencies": {
+    "playwright": "^1.61.0"
+  }
+}
