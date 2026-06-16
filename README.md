@@ -187,3 +187,17 @@ Test     →  verificação de comportamento
 | Tabela Price (parcela) | `PMT = PV × [i×(1+i)^n] / [(1+i)^n - 1]` |
 
 Onde: `P/PV` = principal, `i` = taxa decimal, `t/n` = períodos, `M` = montante
+
+##  Onde encontrar as Evidências e Relatórios
+
+Toda vez que a pipeline é executada, ela gera relatórios automáticos que comprovam a execução dos testes e o status do sistema. 
+
+Para baixar e visualizar esses arquivos, siga os passos abaixo:
+
+1. Acesse a aba **Actions** aqui no repositório do GitHub.
+2. Clique na execução mais recente da pipeline **CI - Calculadora de Juros**.
+3. Na tela de Resumo (Summary), role a página até o final.
+4. Na seção **Artifacts**, você encontrará os seguintes arquivos disponíveis para download:
+   - `evidencia-execucao`: Arquivo com a data, hora, gatilho e status de todos os jobs.
+   - `relatorio-playwright-html`: Relatório visual completo dos testes de interface.
+   - `relatorio-mocha`: Relatório em JSON dos testes unitários.
