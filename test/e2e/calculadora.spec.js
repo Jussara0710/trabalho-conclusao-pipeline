@@ -106,8 +106,11 @@ test.describe("Calculadora de Juros — E2E", () => {
       expect(montante).toBeCloseTo(1126.83, 1);
     });
 
-    test("montante composto deve ser maior que o simples para mesmo cenário", async ({ page }) => {
-      // Calcula simples no mesmo cenário
+   test("montante composto deve ser maior que o simples para mesmo cenário", async ({ page }) => {
+      // 1. Lê e salva o Composto ANTES de mexer na tela
+      const montanteComposto = parseMoeda(await calc.obterTextoMetrica("Montante final"));
+
+      // 2. Recarrega a página e calcula o Simples no mesmo cenário
       const calcSimples = new CalculadoraPage(page);
       await calcSimples.abrir();
       await calcSimples.selecionarTipo("simples");
@@ -115,8 +118,7 @@ test.describe("Calculadora de Juros — E2E", () => {
       await calcSimples.calcular();
       const montanteSimples = parseMoeda(await calcSimples.obterTextoMetrica("Montante final"));
 
-      // Compara com o composto já calculado
-      const montanteComposto = parseMoeda(await calc.obterTextoMetrica("Montante final"));
+      // 3. Compara os dois corretamente
       expect(montanteComposto).toBeGreaterThan(montanteSimples);
     });
   });
