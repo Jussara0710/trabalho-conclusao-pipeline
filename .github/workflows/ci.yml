@@ -141,12 +141,12 @@ jobs:
     steps:
       - name: "Criar arquivo de evidência"
         run: |
-          echo "# 📄 Evidência de Execução da Pipeline" > evidencia.md
+          echo "#  Evidência de Execução da Pipeline" > evidencia.md
           echo "- **Data e Hora da Execução:** $(date -d '-3 hours' +'%d/%m/%Y %H:%M:%S') (Horário de Brasília)" >> evidencia.md
           echo "- **Gatilho (Trigger):** ${{ github.event_name }}" >> evidencia.md
           echo "- **ID da Execução (Run ID):** ${{ github.run_id }}" >> evidencia.md
           echo "" >> evidencia.md
-          echo "### 🚦 Status dos Jobs" >> evidencia.md
+          echo "### Status dos Jobs" >> evidencia.md
           echo "- **Testes Unitários:** ${{ needs.testes-unitarios.result }}" >> evidencia.md
           echo "- **Testes E2E:** ${{ needs.testes-e2e.result }}" >> evidencia.md
           
